@@ -1,0 +1,21 @@
+<div class="container">
+  <h1>WebRTC Video Call</h1>
+  
+  <div class="form-group">
+    <label for="iceServers">STUN/TURN Servers (comma separated):</label>
+    <input type="text" id="iceServers" [(ngModel)]="iceServersInput" 
+           placeholder="stun:server:port, turn:user:cred@server:port">
+  </div>
+  
+  <button (click)="proceed()" [disabled]="isLoading">
+    {{ isLoading ? 'Initializing...' : 'Start Call' }}
+  </button>
+
+  <div class="default-servers">
+    <h3>Public STUN Servers:</h3>
+    <ul>
+      <li>stun:stun.l.google.com:19302</li>
+      <li>stun:global.stun.twilio.com:3478</li>
+    </ul>
+  </div>
+</div>
