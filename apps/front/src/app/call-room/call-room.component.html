@@ -1,0 +1,16 @@
+<div class="call-container" *ngIf="!errorMessage; else errorBlock">
+  <div class="video-container">
+    <p>remoteVideo</p>
+    <video #remoteVideo autoplay playsinline class="remote-video" muted></video>
+    <p>localVideo</p>
+    <video #localVideo autoplay playsinline muted class="local-video"></video>
+  </div>
+</div>
+
+<ng-template #errorBlock>
+  <div class="error-container">
+    <h2>Call Unavailable</h2>
+    <p>{{ errorMessage }}</p>
+    <button (click)="router.navigate(['/'])">Back to Home</button>
+  </div>
+</ng-template>
