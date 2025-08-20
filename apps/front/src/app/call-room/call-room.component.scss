@@ -1,0 +1,10 @@
+.video-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0 10vw;
+}
+
+video {
+    width: 40vw;
+}
