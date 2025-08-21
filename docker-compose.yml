@@ -10,7 +10,7 @@ services:
     depends_on:
       - backend
     environment:
-      - API_URL='https://84.39.245.249/:3000'
+      - API_URL='https://chat.aanaa.space:3000'
     networks:
       - app-network
 
@@ -25,12 +25,6 @@ services:
       - PORT=3000
     networks:
       - app-network
-    # Добавляем healthcheck для надежности
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 networks:
   app-network:
