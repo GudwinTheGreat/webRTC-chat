@@ -16,11 +16,10 @@ RUN npx nx build front --configuration=production
 # Этап production
 FROM nginx:alpine
 
-# Копируем собранное приложение в nginx
-COPY --from=builder /app/dist/apps/front /usr/share/nginx/html
+# Копируем собранное приложение в nginx из ПРАВИЛЬНОГО пути
+COPY --from=builder /app/dist/apps/front/browser /usr/share/nginx/html
 
-# Копируем конфиг nginx из ПРАВИЛЬНОГО пути
-# Если nginx.conf находится в apps/front/
+# Копируем конфиг nginx
 COPY apps/front/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
