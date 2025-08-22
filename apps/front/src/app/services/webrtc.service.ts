@@ -3,7 +3,7 @@ import { SocketService } from './socket';
 
 @Injectable({ providedIn: 'root' })
 export class WebRTCService {
-  public role: 'caller' | 'callee' = 'callee';
+  public role: 'caller' | 'callee' = localStorage.getItem("role") as 'caller' ?? 'callee';
   public peerConnection!: RTCPeerConnection;
   public localStream!: MediaStream;
   public remoteStream: MediaStream;
@@ -26,14 +26,22 @@ export class WebRTCService {
 
     this.setupWebRtcEvents();
 
+    this.removeSocketEvents();
     this.setupSocketEvents();
+
     if (this.role === 'caller') {
+      const existingTrackIds = this.getExistingTrackIds();
+
       (await this.getMediaStream()).getTracks().forEach(track => {
-        console.log('add media track', track);
-        this.peerConnection.addTrack(track);
+        if (!existingTrackIds.includes(track.id)) {
+          console.log('add media track', track);
+          this.peerConnection.addTrack(track);
+        } else {
+          console.log('track already added, skipping', track);
+        }
       });
-    }else{
-      (await this.getMediaStream())
+    } else {
+      (await this.getMediaStream());
     }
   }
 
@@ -54,14 +62,28 @@ export class WebRTCService {
     }
   }
 
+  private removeSocketEvents() {
+    this.socketService.socket.off('offer');
+    this.socketService.socket.off('answer');
+    this.socketService.socket.off('ice-candidate');
+    this.socketService.socket.off('new-peer');
+  }
+
   setupSocketEvents() {
     this.socketService.socket.on('offer', async (offer) => {
       console.log('handle event offer', offer);
       try {
         if (this.role === 'callee') {
+          const existingTrackIds = this.getExistingTrackIds();
+
           (await this.getMediaStream()).getTracks().forEach(track => {
             console.log('add media track', track);
-            this.peerConnection.addTrack(track);
+            if (!existingTrackIds.includes(track.id)) {
+              console.log('add media track', track);
+              this.peerConnection.addTrack(track);
+            } else {
+              console.log('track already added, skipping', track);
+            }
           });
         }
         await this.peerConnection.setRemoteDescription(offer);
@@ -211,11 +233,41 @@ export class WebRTCService {
 
   cleanup() {
     if (this.peerConnection) {
+      this.peerConnection.getSenders().forEach(sender => {
+        if (sender.track) sender.track.stop();
+      });
+      this.peerConnection.getReceivers().forEach(receiver => {
+        if (receiver.track) receiver.track.stop();
+      });
+
+      this.peerConnection.onconnectionstatechange = null;
+      this.peerConnection.oniceconnectionstatechange = null;
+      this.peerConnection.onsignalingstatechange = null;
+      this.peerConnection.onicegatheringstatechange = null;
+      this.peerConnection.onnegotiationneeded = null;
+      this.peerConnection.ontrack = null;
+      this.peerConnection.onicecandidate = null;
       this.peerConnection.close();
     }
     if (this.localStream) {
       this.localStream.getTracks().forEach(track => track.stop());
     }
+    // Очистите remoteStream
+    this.remoteStream.getTracks().forEach(track => track.stop());
+    this.remoteStream = new MediaStream();
+
+    // Очистите буфер кандидатов
+    this.iceCandidateBuffer = [];
+
     this.socketService.socket.disconnect();
+    console.log('cleanup')
+  }
+
+  private getExistingTrackIds() {
+    const existingSenders = this.peerConnection.getSenders();
+    const existingTrackIds = existingSenders.map(sender =>
+      sender.track ? sender.track.id : null
+    ).filter(id => id !== null);
+    return existingTrackIds
   }
 }
