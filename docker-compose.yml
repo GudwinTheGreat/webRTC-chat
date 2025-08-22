@@ -6,11 +6,11 @@ services:
       context: .
       dockerfile: apps/front/Dockerfile
     ports:
-      - '9000:80'
+      - '3001:80'
     depends_on:
       - backend
     environment:
-      - API_URL='https://chat.aanaa.space:3000'
+      - API_URL='localhost:3000'
     networks:
       - app-network
 
