@@ -136,6 +136,9 @@ export class WebRTCService {
   setupWebRtcEvents() {
     this.peerConnection.onconnectionstatechange = () => {
       console.log('Connection state:', this.peerConnection.connectionState);
+      if (this.peerConnection.connectionState === 'failed') {
+        this.cleanup();
+      }
     };
 
     this.peerConnection.oniceconnectionstatechange = () => {
@@ -219,11 +222,25 @@ export class WebRTCService {
 
   cleanup() {
     if (this.peerConnection) {
+      this.peerConnection.onconnectionstatechange = null;
+      this.peerConnection.oniceconnectionstatechange = null;
+      this.peerConnection.onsignalingstatechange = null;
+      this.peerConnection.onicegatheringstatechange = null;
+      this.peerConnection.onnegotiationneeded = null;
+      this.peerConnection.ontrack = null;
+      this.peerConnection.onicecandidate = null;
       this.peerConnection.close();
     }
     if (this.localStream) {
       this.localStream.getTracks().forEach(track => track.stop());
     }
+    // Очистите remoteStream
+    this.remoteStream.getTracks().forEach(track => track.stop());
+    this.remoteStream = new MediaStream();
+
+    // Очистите буфер кандидатов
+    this.iceCandidateBuffer = [];
+
     this.socketService.socket.disconnect();
   }
 }
