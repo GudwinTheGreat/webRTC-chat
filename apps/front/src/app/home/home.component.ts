@@ -22,8 +22,23 @@ export class HomeComponent {
     private router: Router
   ) { }
 
+  ngOnInit() {
+    this.debug();
+    localStorage.setItem("role", "callee");
+  }
+
   get isServrsEmpty() {
     return this.servers.length === 0
+  }
+
+  private debug() {
+    this.servers.push({
+      "urls": "turn:git.demetrix.ru:3478",
+      "credential": "passowrd",
+      "username": "test",
+      //@ts-ignore
+      "password": "test"
+    })
   }
 
   addServer() {
@@ -42,6 +57,8 @@ export class HomeComponent {
 
     try {
       this.webrtcService.role = 'caller';
+      localStorage.setItem("role", "caller");
+
       const iceServers = this.servers;
       const roomId = await this.webrtcService.createRoom(iceServers);
 

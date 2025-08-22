@@ -3,7 +3,7 @@ import { SocketService } from './socket';
 
 @Injectable({ providedIn: 'root' })
 export class WebRTCService {
-  public role: 'caller' | 'callee' = 'callee';
+  public role: 'caller' | 'callee' = localStorage.getItem("role") as 'caller' ?? 'callee';
   public peerConnection!: RTCPeerConnection;
   public localStream!: MediaStream;
   public remoteStream: MediaStream;
@@ -136,9 +136,6 @@ export class WebRTCService {
   setupWebRtcEvents() {
     this.peerConnection.onconnectionstatechange = () => {
       console.log('Connection state:', this.peerConnection.connectionState);
-      if (this.peerConnection.connectionState === 'failed') {
-        this.cleanup();
-      }
     };
 
     this.peerConnection.oniceconnectionstatechange = () => {
@@ -242,5 +239,6 @@ export class WebRTCService {
     this.iceCandidateBuffer = [];
 
     this.socketService.socket.disconnect();
+    console.log('cleanup')
   }
 }
