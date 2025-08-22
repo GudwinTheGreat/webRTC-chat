@@ -11,10 +11,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'https://chat.aanaa.space',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: process.env.CORS_ORIGIN || 'https://chat.aanaa.space',
+  //   credentials: true,
+  // });
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(

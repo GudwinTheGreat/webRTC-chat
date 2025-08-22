@@ -5,7 +5,7 @@ declare function require(s: string): any;
 
 export const environment = {
   production: false,
-  apiUrl: 'https://84.39.245.249/:3000'
+  apiUrl: 'http://localhost:3000'
 };
 
 
