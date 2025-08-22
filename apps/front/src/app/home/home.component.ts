@@ -13,6 +13,7 @@ export class HomeComponent {
   iceServersInput = 'stun:stun.l.google.com:19302';
   username = ''
   credential = ''
+  password = ''
   isLoading = false;
   public servers: RTCIceServer[] = []
 
@@ -29,7 +30,9 @@ export class HomeComponent {
     const server: RTCIceServer = {
       urls: this.iceServersInput,
       credential: this.credential ?? undefined,
-      username: this.username ?? undefined
+      username: this.username ?? undefined,
+      //@ts-ignore
+      password: this.password ?? undefined
     }
     this.servers.push(server);
   }
