@@ -28,13 +28,20 @@ export class WebRTCService {
 
     this.removeSocketEvents();
     this.setupSocketEvents();
+
     if (this.role === 'caller') {
+      const existingTrackIds = this.getExistingTrackIds();
+
       (await this.getMediaStream()).getTracks().forEach(track => {
-        console.log('add media track', track);
-        this.peerConnection.addTrack(track);
+        if (!existingTrackIds.includes(track.id)) {
+          console.log('add media track', track);
+          this.peerConnection.addTrack(track);
+        } else {
+          console.log('track already added, skipping', track);
+        }
       });
     } else {
-      (await this.getMediaStream())
+      (await this.getMediaStream());
     }
   }
 
@@ -67,9 +74,16 @@ export class WebRTCService {
       console.log('handle event offer', offer);
       try {
         if (this.role === 'callee') {
+          const existingTrackIds = this.getExistingTrackIds();
+
           (await this.getMediaStream()).getTracks().forEach(track => {
             console.log('add media track', track);
-            this.peerConnection.addTrack(track);
+            if (!existingTrackIds.includes(track.id)) {
+              console.log('add media track', track);
+              this.peerConnection.addTrack(track);
+            } else {
+              console.log('track already added, skipping', track);
+            }
           });
         }
         await this.peerConnection.setRemoteDescription(offer);
@@ -219,6 +233,13 @@ export class WebRTCService {
 
   cleanup() {
     if (this.peerConnection) {
+      this.peerConnection.getSenders().forEach(sender => {
+        if (sender.track) sender.track.stop();
+      });
+      this.peerConnection.getReceivers().forEach(receiver => {
+        if (receiver.track) receiver.track.stop();
+      });
+
       this.peerConnection.onconnectionstatechange = null;
       this.peerConnection.oniceconnectionstatechange = null;
       this.peerConnection.onsignalingstatechange = null;
@@ -240,5 +261,13 @@ export class WebRTCService {
 
     this.socketService.socket.disconnect();
     console.log('cleanup')
+  }
+
+  private getExistingTrackIds() {
+    const existingSenders = this.peerConnection.getSenders();
+    const existingTrackIds = existingSenders.map(sender =>
+      sender.track ? sender.track.id : null
+    ).filter(id => id !== null);
+    return existingTrackIds
   }
 }
