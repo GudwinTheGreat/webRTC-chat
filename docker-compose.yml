@@ -9,8 +9,6 @@ services:
       - '3001:80'
     depends_on:
       - backend
-    environment:
-      - API_URL='localhost:3000'
     networks:
       - app-network
 

@@ -26,13 +26,14 @@ export class WebRTCService {
 
     this.setupWebRtcEvents();
 
+    this.removeSocketEvents();
     this.setupSocketEvents();
     if (this.role === 'caller') {
       (await this.getMediaStream()).getTracks().forEach(track => {
         console.log('add media track', track);
         this.peerConnection.addTrack(track);
       });
-    }else{
+    } else {
       (await this.getMediaStream())
     }
   }
@@ -52,6 +53,13 @@ export class WebRTCService {
     } catch (error) {
       console.error('Error creating offer:', error);
     }
+  }
+
+  private removeSocketEvents() {
+    this.socketService.socket.off('offer');
+    this.socketService.socket.off('answer');
+    this.socketService.socket.off('ice-candidate');
+    this.socketService.socket.off('new-peer');
   }
 
   setupSocketEvents() {
