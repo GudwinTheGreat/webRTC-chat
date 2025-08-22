@@ -1,0 +1,12 @@
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1rem;
+}
+
+.servers-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}

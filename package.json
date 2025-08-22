@@ -2,7 +2,12 @@
   "name": "@web-rtc-chat/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "docker:build:front": "docker build -f apps/front/Dockerfile -t myapp-front .",
+    "docker:build:back": "docker build -f apps/backend/Dockerfile -t myapp-back .",
+    "docker:compose:up": "docker-compose up -d",
+    "docker:compose:build": "docker-compose build"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~20.1.0",
@@ -20,6 +25,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

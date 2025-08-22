@@ -11,19 +11,44 @@ import { FormsModule } from '@angular/forms';
 })
 export class HomeComponent {
   iceServersInput = 'stun:stun.l.google.com:19302';
+  username = ''
+  credential = ''
+  password = ''
   isLoading = false;
+  public servers: RTCIceServer[] = []
 
   constructor(
     private webrtcService: WebRTCService,
     private router: Router
   ) { }
 
+  ngOnInit() {
+    localStorage.setItem("role", "callee");
+  }
+
+  get isServrsEmpty() {
+    return this.servers.length === 0
+  }
+
+  addServer() {
+    const server: RTCIceServer = {
+      urls: this.iceServersInput,
+      credential: this.credential ?? undefined,
+      username: this.username ?? undefined,
+      //@ts-ignore
+      password: this.password ?? undefined
+    }
+    this.servers.push(server);
+  }
+
   async proceed() {
     this.isLoading = true;
 
     try {
       this.webrtcService.role = 'caller';
-      const iceServers = this.parseIceServers();
+      localStorage.setItem("role", "caller");
+
+      const iceServers = this.servers;
       const roomId = await this.webrtcService.createRoom(iceServers);
 
       this.router.navigate([roomId]);
@@ -33,21 +58,5 @@ export class HomeComponent {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  private parseIceServers(): RTCIceServer[] {
-    return this.iceServersInput.split(',').map(server => {
-      const [adress, credentials] = server?.trim()?.split('|');
-      console.log('adress', adress, credentials)
-      const [type, url, port] = adress?.trim()?.split(':');
-      console.log('type', type, url, port)
-      const [username, credential] = credentials ? credentials?.trim().split('@') : ['', '']
-      console.log(username, credential)
-      return {
-        urls: `${type}:${url}:${port}`,
-        username: username || undefined,
-        credential: credential || undefined
-      };
-    });
   }
 }
