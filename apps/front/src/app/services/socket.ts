@@ -7,6 +7,6 @@ export class SocketService {
     public socket: Socket;
 
     constructor() {
-        this.socket = io(environment.apiUrl);
+        this.socket = io(`${window.location.protocol}//${window.location.hostname}:443`);
     }
 }
