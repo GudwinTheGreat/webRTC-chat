@@ -6,6 +6,8 @@ export class SocketService {
     public socket: Socket;
 
     constructor() {
-        this.socket = io(`${window.location.protocol}//${window.location.hostname}:443`);
+        const isDev = window.location.hostname === 'localhost';
+        const url = isDev ? 'http://localhost:3000' : `wss://${window.location.hostname}`
+        this.socket = io(url);
     }
 }
