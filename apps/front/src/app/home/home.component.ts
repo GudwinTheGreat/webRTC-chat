@@ -3,6 +3,34 @@ import { Router } from '@angular/router';
 import { WebRTCService } from '../services/webrtc.service';
 import { FormsModule } from '@angular/forms';
 
+document.addEventListener('DOMContentLoaded', function() {
+    const themeSwitch = <HTMLInputElement> document.getElementById('theme-switch');
+    const themeText = <HTMLSpanElement> document.querySelector('.theme-text');
+    const body = document.body;
+    
+    updateThemeText();
+    
+
+    themeSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            body.classList.remove('theme-light');
+            body.classList.add('theme-dark');
+        } else {
+            body.classList.remove('theme-dark');
+            body.classList.add('theme-light');
+        }
+        updateThemeText();
+    });
+    
+    function updateThemeText() {
+        if (body.classList.contains('theme-dark')) {
+            themeText.textContent = 'Светлая тема';
+        } else {
+            themeText.textContent = 'Тёмная тема';
+        }
+    }
+});
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

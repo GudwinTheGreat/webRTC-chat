@@ -1,6 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+/* Светлая тема */
+body.theme-light {
+    --bg-color: #edeff0;
+    --text-color: #333333;
+    --accent-color: #007bff;
+    --toggle-bg: #f0f0f0;
+    --toggle-border: #ccc;
+}
 
+body.theme-dark {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --accent-color: #4da6ff;
+    --toggle-bg: #333333;
+    --toggle-border: #666;
+}
 
-.text-center {
-    text-align: center;
+body {
+    font-family: "Lato", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
 }
