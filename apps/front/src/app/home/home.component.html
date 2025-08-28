@@ -1,33 +1,44 @@
 <div class="container">
+  <div class="theme-toggle">
+    <input type="checkbox" id="theme-switch" class="theme theme-switch">
+    <label for="theme-switch" class="theme-label">
+      <span class="theme-text"></span>
+      <div class="theme-slider"></div>
+    </label>
+  </div>
   <h1>WebRTC Video Call</h1>
 
   <div class="form-group">
     <label for="iceServers">STUN/TURN Servers (comma separated):</label>
-    <input
-      type="text"
-      id="iceServers"
-      [(ngModel)]="iceServersInput"
-      placeholder="stun:server:port"
-    />
-    <input
-      type="text"
-      id="username"
-      [(ngModel)]="username"
-      placeholder="enter user name if needed"
-    />
-    <input
-      type="password"
-      id="credential"
-      [(ngModel)]="credential"
-      placeholder="enter credential if needed"
-    />
-
-    <input
-      type="password"
-      id="password"
-      [(ngModel)]="password"
-      placeholder="enter password if needed"
-    />
+    <div class="input-effect">
+      <input placeholder="stun:server:port" class="servers-input" type="text" id="iceServers"
+        [(ngModel)]="iceServersInput" />
+      <label></label>
+      <span class="focus-border">
+        <i></i>
+      </span>
+    </div>
+    <div class="input-effect">
+      <input class="servers-input" type="text" id="username" [(ngModel)]="username" />
+      <label>enter user name if needed</label>
+      <span class="focus-border">
+        <i></i>
+      </span>
+    </div>
+    <div class="input-effect">
+      <input class="servers-input" type="password" id="credential" [(ngModel)]="credential" />
+      <label>enter credential if needed</label>
+      <span class="focus-border">
+        <i></i>
+      </span>
+    </div>
+    <div class="input-effect">
+      <input class="servers-input" type="password" id="password" [(ngModel)]="password" />
+      <label>enter password if needed</label>
+      <span class="focus-border">
+        <i></i>
+      </span>
+    </div>
   </div>
 
   @if(isServrsEmpty){
@@ -39,7 +50,7 @@
   </button>
   }
   <div class="added-server-list">
-      <h3>Added Servers:</h3>
+    <h3>Added Servers:</h3>
     <ul>
       @for(server of servers; track server.urls){
       <li>{{ server.urls }}</li>
